@@ -1,56 +1,43 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+import CurrentWeather from "./components/CurrentWeather";
+import Forecast from "./components/Forecast";
+import LoadingSpinner from "./components/LoadingSpinner";
 import SearchBar from "./components/SearchBar";
-import WeatherCard from "./components/WeatherCard";
-import { getCurrentWeather } from "./services/WeatherAPI";
+import ThemeToggle from "./components/ThemeToggle";
+import { useWeather, WeatherProvider } from "./contexts/WeatherContext";
+import "./styles/animations.css";
+import "./styles/globals.css";
+import "./styles/theme.css";
 
-function App() {
-  const [weatherData, setWeatherData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        const data = await getCurrentWeather(
-          process.env.REACT_APP_DEFAULT_CITY
-        );
-        setWeatherData(data);
-      } catch (err) {
-        setError("Failed to fetch weather data");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWeather();
-  }, []);
-
-  if (loading) return <div className="loading">Loading weather data...</div>;
-  if (error) return <div className="error">{error}</div>;
-
-  // Add this function to App.js
-  const handleSearch = async (city) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await getCurrentWeather(city);
-      setWeatherData(data);
-    } catch (err) {
-      setError("City not found. Please try another location.");
-    } finally {
-      setLoading(false);
-    }
-  };
+const WeatherApp = () => {
+  const { loading, error } = useWeather();
 
   return (
-    <div className="app">
-      <h1>Simple Weather Reporter</h1>
-      <WeatherCard weatherData={weatherData} />
-      <SearchBar onSearch={handleSearch} />;
+    <div className="app-container">
+      <header className="header">
+        <h1 className="app-title">WeatherSphere</h1>
+        <ThemeToggle />
+      </header>
+
+      <SearchBar />
+
+      {loading ? (
+        <LoadingSpinner />
+      ) : error ? (
+        <div className="error-display">{error}</div>
+      ) : (
+        <>
+          <CurrentWeather />
+          <Forecast />
+        </>
+      )}
     </div>
   );
-}
+};
+
+const App = () => (
+  <WeatherProvider>
+    <WeatherApp />
+  </WeatherProvider>
+);
 
 export default App;
