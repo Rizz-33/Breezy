@@ -1,0 +1,47 @@
+.current-weather {
+  position: relative;
+  padding: 2rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.weather-main {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.temperature {
+  text-align: center;
+}
+
+.temp-value {
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+.temp-unit {
+  font-size: 2rem;
+  vertical-align: super;
+}
+
+.weather-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+/* Animation elements */
+.rain-container,
+.snow-container,
+.fog-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
