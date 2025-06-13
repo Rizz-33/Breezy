@@ -121,10 +121,10 @@ const CurrentWeather = () => {
             ease: "easeInOut",
           }}
         >
-          <WiDaySunny className="text-yellow-500" size={80} />
+          <WiDaySunny className="text-yellow-500" size={120} />
         </motion.div>
       ) : (
-        <WiNightClear className="text-indigo-400" size={80} />
+        <WiNightClear className="text-indigo-400" size={120} />
       );
     if (code === 1003 || code === 1006 || code === 1009)
       return (
@@ -136,20 +136,20 @@ const CurrentWeather = () => {
             ease: "easeInOut",
           }}
         >
-          <WiDayCloudy className="text-gray-500" size={80} />
+          <WiDayCloudy className="text-gray-500" size={120} />
         </motion.div>
       );
     if (code === 1030 || code === 1135 || code === 1147)
-      return <WiFog className="text-gray-400" size={80} />;
+      return <WiFog className="text-gray-400" size={120} />;
     if (code >= 1063 && code <= 1201)
-      return <WiRain className="text-blue-500" size={80} />;
+      return <WiRain className="text-blue-500" size={120} />;
     if (code >= 1204 && code <= 1237)
-      return <WiSnow className="text-blue-200" size={80} />;
+      return <WiSnow className="text-blue-200" size={120} />;
     if (code >= 1240 && code <= 1264)
-      return <WiRain className="text-blue-500" size={80} />;
+      return <WiRain className="text-blue-500" size={120} />;
     if (code >= 1273 && code <= 1282)
-      return <WiThunderstorm className="text-purple-600" size={80} />;
-    return <WiCloudy className="text-gray-500" size={80} />;
+      return <WiThunderstorm className="text-purple-600" size={120} />;
+    return <WiCloudy className="text-gray-500" size={120} />;
   };
 
   const getWeatherAnimation = () => {
@@ -168,16 +168,16 @@ const CurrentWeather = () => {
 
   return (
     <motion.div
-      className="relative overflow-hidden bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-lg p-4 sm:p-6 w-full max-w-3xl"
+      className="relative overflow-hidden bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-lg p-6 w-full max-w-4xl mx-auto"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       <AnimatePresence>{getWeatherAnimation()}</AnimatePresence>
 
-      <div className="location relative z-10 mb-6">
+      <div className="location relative z-10 mb-8">
         <motion.h2
-          className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white"
+          className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
@@ -185,7 +185,7 @@ const CurrentWeather = () => {
           {location.name}, {location.country}
         </motion.h2>
         <motion.p
-          className="text-sm text-gray-500 dark:text-gray-300"
+          className="text-sm text-gray-500 dark:text-gray-300 text-center mt-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
@@ -194,7 +194,7 @@ const CurrentWeather = () => {
         </motion.p>
       </div>
 
-      <div className="weather-main relative z-10 flex flex-col sm:flex-row items-center justify-between mb-6 gap-6">
+      <div className="weather-main relative z-10 flex flex-col sm:flex-row items-center justify-between gap-8">
         <motion.div
           className="flex flex-col items-center"
           initial={{ scale: 0.9 }}
@@ -203,7 +203,7 @@ const CurrentWeather = () => {
         >
           {getWeatherIcon()}
           <motion.p
-            className="text-lg text-gray-600 dark:text-gray-200 capitalize mt-2"
+            className="text-xl text-gray-600 dark:text-gray-200 capitalize mt-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
@@ -213,21 +213,21 @@ const CurrentWeather = () => {
         </motion.div>
 
         <motion.div
-          className="text-center sm:text-right"
+          className="text-center"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          <div className="flex items-end justify-center sm:justify-end">
-            <span className="text-5xl sm:text-6xl font-bold text-gray-800 dark:text-white">
+          <div className="flex items-end justify-center">
+            <span className="text-6xl sm:text-7xl font-bold text-gray-800 dark:text-white">
               {Math.round(temp)}
             </span>
-            <span className="text-2xl sm:text-3xl font-medium text-gray-600 dark:text-gray-300 mb-1">
+            <span className="text-3xl sm:text-4xl font-medium text-gray-600 dark:text-gray-300 mb-2">
               °{unit === "celsius" ? "C" : "F"}
             </span>
           </div>
           <motion.p
-            className="text-gray-500 dark:text-gray-300 text-sm"
+            className="text-gray-500 dark:text-gray-300 text-lg mt-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
@@ -238,40 +238,40 @@ const CurrentWeather = () => {
       </div>
 
       <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 gap-3 relative z-10"
+        className="grid grid-cols-2 sm:grid-cols-3 gap-4 relative z-10 mt-12"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
       >
         <WeatherDetail
-          icon={<WiHumidity className="text-blue-600" size={24} />}
+          icon={<WiHumidity className="text-blue-600" size={28} />}
           title="Humidity"
           value={`${current.humidity}%`}
         />
         <WeatherDetail
-          icon={<WiStrongWind className="text-blue-500" size={24} />}
+          icon={<WiStrongWind className="text-blue-500" size={28} />}
           title="Wind"
           value={`${current.wind_kph} km/h`}
           extra={`${current.wind_dir}`}
         />
         <WeatherDetail
-          icon={<FiSun className="text-yellow-500" size={24} />}
+          icon={<FiSun className="text-yellow-500" size={28} />}
           title="UV Index"
           value={current.uv}
           extra={getUVIndexLevel(current.uv)}
         />
         <WeatherDetail
-          icon={<WiBarometer className="text-indigo-600" size={24} />}
+          icon={<WiBarometer className="text-indigo-600" size={28} />}
           title="Pressure"
           value={`${current.pressure_mb} mb`}
         />
         <WeatherDetail
-          icon={<FiDroplet className="text-blue-400" size={24} />}
+          icon={<FiDroplet className="text-blue-400" size={28} />}
           title="Precipitation"
           value={`${current.precip_mm} mm`}
         />
         <WeatherDetail
-          icon={<FiEye className="text-gray-600" size={24} />}
+          icon={<FiEye className="text-gray-600" size={28} />}
           title="Visibility"
           value={`${current.vis_km} km`}
         />
