@@ -1,11 +1,16 @@
 // src/components/CurrentWeather.js
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  FiAlertTriangle,
+  FiCloudSnow,
   FiDroplet,
   FiEye,
+  FiHeart,
   FiSun,
   FiSunrise,
   FiSunset,
+  FiThermometer,
+  FiUmbrella,
   FiWind,
 } from "react-icons/fi";
 import {
@@ -136,6 +141,167 @@ const CloudAnimation = () => (
   </div>
 );
 
+const WeatherAdvice = ({
+  weatherCode,
+  temp,
+  humidity,
+  uvIndex,
+  windSpeed,
+  unit,
+}) => {
+  const getWeatherAdvice = () => {
+    const tempC = unit === "celsius" ? temp : ((temp - 32) * 5) / 9;
+    const advice = [];
+
+    // Temperature-based advice
+    if (tempC > 30) {
+      advice.push({
+        icon: <FiThermometer className="text-red-500" size={20} />,
+        message: "It's hot out there! Stay hydrated and wear light colors 🌡️",
+        bgColor:
+          "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700",
+      });
+    } else if (tempC < 5) {
+      advice.push({
+        icon: <FiCloudSnow className="text-blue-500" size={20} />,
+        message: "Bundle up! It's freezing cold - wear warm layers 🧥",
+        bgColor:
+          "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700",
+      });
+    } else if (tempC < 15) {
+      advice.push({
+        icon: <FiThermometer className="text-blue-400" size={20} />,
+        message: "A bit chilly today - consider bringing a jacket! 🧥",
+        bgColor:
+          "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700",
+      });
+    }
+
+    // Weather condition-based advice
+    if (weatherCode >= 1063 && weatherCode <= 1264) {
+      advice.push({
+        icon: <FiUmbrella className="text-blue-600" size={20} />,
+        message: "Don't forget your umbrella! It's raining ☔",
+        bgColor:
+          "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700",
+      });
+    }
+
+    if (weatherCode >= 1204 && weatherCode <= 1237) {
+      advice.push({
+        icon: <FiCloudSnow className="text-cyan-500" size={20} />,
+        message: "Snow day vibes! Drive carefully and wear warm boots ❄️",
+        bgColor:
+          "bg-cyan-50 dark:bg-cyan-900/20 border-cyan-200 dark:border-cyan-700",
+      });
+    }
+
+    if (weatherCode === 1030 || weatherCode === 1135 || weatherCode === 1147) {
+      advice.push({
+        icon: <FiEye className="text-gray-500" size={20} />,
+        message: "Foggy conditions ahead - drive slowly and use headlights 🌫️",
+        bgColor:
+          "bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-700",
+      });
+    }
+
+    if (weatherCode >= 1273 && weatherCode <= 1282) {
+      advice.push({
+        icon: <FiAlertTriangle className="text-purple-600" size={20} />,
+        message: "Thunderstorm alert! Stay indoors and avoid open areas ⛈️",
+        bgColor:
+          "bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-700",
+      });
+    }
+
+    if (weatherCode === 1000) {
+      advice.push({
+        icon: <FiSun className="text-yellow-500" size={20} />,
+        message:
+          "Perfect weather for outdoor activities! Enjoy the sunshine ☀️",
+        bgColor:
+          "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-700",
+      });
+    }
+
+    // UV Index advice
+    if (uvIndex > 7) {
+      advice.push({
+        icon: <FiSun className="text-orange-500" size={20} />,
+        message: "High UV levels! Don't forget sunscreen and sunglasses 🕶️",
+        bgColor:
+          "bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-700",
+      });
+    }
+
+    // Wind advice
+    if (windSpeed > 40) {
+      advice.push({
+        icon: <FiWind className="text-teal-500" size={20} />,
+        message:
+          "Very windy today! Hold onto your hat and be careful with umbrellas 💨",
+        bgColor:
+          "bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-700",
+      });
+    }
+
+    // Humidity advice
+    if (humidity > 80) {
+      advice.push({
+        icon: <FiDroplet className="text-blue-400" size={20} />,
+        message: "High humidity - it might feel muggy out there! 💧",
+        bgColor:
+          "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700",
+      });
+    }
+
+    // Default positive message if no specific conditions
+    if (advice.length === 0) {
+      advice.push({
+        icon: <FiHeart className="text-pink-500" size={20} />,
+        message: "Great weather day! Perfect for whatever you have planned 😊",
+        bgColor:
+          "bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-700",
+      });
+    }
+
+    return advice;
+  };
+
+  const adviceList = getWeatherAdvice();
+
+  return (
+    <motion.div
+      className="weather-advice mt-14 mb-14 space-y-3"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1.2 }}
+    >
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+        <FiHeart className="text-pink-500" />
+        Weather Tips for You
+      </h3>
+      {adviceList.map((advice, index) => (
+        <motion.div
+          key={index}
+          className={`p-4 rounded-xl border-2 ${advice.bgColor} backdrop-blur-sm`}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.3 + index * 0.1 }}
+          whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+        >
+          <div className="flex items-center gap-3">
+            {advice.icon}
+            <p className="text-gray-700 dark:text-gray-200 font-medium">
+              {advice.message}
+            </p>
+          </div>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+};
+
 const CurrentWeather = () => {
   const { weatherData, unit } = useWeather();
 
@@ -239,7 +405,7 @@ const CurrentWeather = () => {
 
   return (
     <motion.div
-      className="relative overflow-hidden bg-transparent backdrop-blur-lg p-6 md:p-8 w-full max-w-5xlx mx-auto"
+      className="relative overflow-hidden bg-transparent backdrop-blur-lg p-6 md:p-8 w-full max-w-7xl mx-auto"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
@@ -404,6 +570,16 @@ const CurrentWeather = () => {
           </motion.div>
         ))}
       </motion.div>
+
+      {/* Weather Advice Section */}
+      <WeatherAdvice
+        weatherCode={current.condition.code}
+        temp={temp}
+        humidity={current.humidity}
+        uvIndex={current.uv}
+        windSpeed={current.wind_kph}
+        unit={unit}
+      />
     </motion.div>
   );
 };
