@@ -1,3 +1,4 @@
+// src/contexts/WeatherContext.js
 import { createContext, useContext, useEffect, useState } from "react";
 import { getCurrentWeather, getForecast } from "../services/WeatherAPI";
 
@@ -37,7 +38,12 @@ export const WeatherProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    document.body.className = theme;
+    // Apply 'dark' class to <html> for Tailwind dark mode
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }, [theme]);
 
   useEffect(() => {
