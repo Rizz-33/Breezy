@@ -13,7 +13,7 @@ const WeatherApp = () => {
 
   return (
     <ErrorBoundary>
-      <div className="app-container">
+      <div className="app-container min-h-screen flex flex-col">
         <nav className="navbar">
           <div className="navbar-content">
             <img
@@ -28,7 +28,7 @@ const WeatherApp = () => {
           </div>
         </nav>
 
-        <main className="weather-display">
+        <main className="weather-display flex-1">
           {loading ? (
             <LoadingSpinner />
           ) : error ? (
@@ -44,6 +44,20 @@ const WeatherApp = () => {
             </>
           )}
         </main>
+
+        <footer className="bg-white dark:bg-gray-800 text-gray-950 dark:text-white py-2">
+          <div className="max-w mx-auto px-2 sm:px-4 lg:px-6 flex justify-between items-center">
+            <span className="text-xs">Breezy All rights reserved.</span>
+            <a
+              href="https://github.com/Rizz-33"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs hover:underline"
+            >
+              Rizz-33
+            </a>
+          </div>
+        </footer>
       </div>
     </ErrorBoundary>
   );
