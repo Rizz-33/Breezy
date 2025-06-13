@@ -132,7 +132,7 @@ const Forecast = () => {
         for (let h = 0; h < 24; h++) {
           const hourTemp = baseTemp + Math.sin((h * Math.PI) / 12) * 5; // Simulate daily temperature curve
           hourlyData.push({
-            time: `${h}:00`,
+            time: `${h}:00`.padStart(5, "0"), // Ensure format like "09:00"
             temp_c: hourTemp,
             temp_f: (hourTemp * 9) / 5 + 32,
             condition: {
@@ -416,7 +416,7 @@ const Forecast = () => {
       <div className="space-y-6">
         {/* Current weather summary */}
         <motion.div
-          className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 shadow-lg text-white"
+          className="bg-gradient-to-r from-blue-500 to-blue-950 rounded-xl p-6 shadow-lg text-white"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -529,7 +529,6 @@ const Forecast = () => {
             </div>
           </div>
         </motion.div>
-
         {/* Hourly forecast */}
         <div className="bg-white/95 dark:bg-gray-700/95 rounded-xl p-6 shadow-sm">
           <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
@@ -539,15 +538,17 @@ const Forecast = () => {
             <div className="overflow-x-auto pb-2">
               <div className="flex gap-4">
                 {hourlyData.map((hour, index) => {
-                  const hourDate = new Date(dayData.date);
-                  const [hourNum] = hour.time?.split(":").map(Number) || [0];
-                  hourDate.setHours(hourNum);
+                  // Parse hour from time string (format "HH:00")
+                  const hourString = hour.time?.split(":")[0] || "0";
+                  const hourNum = parseInt(hourString, 10);
+                  const ampm = hourNum >= 12 ? "PM" : "AM";
+                  const displayHour = hourNum % 12 || 12; // Convert to 12-hour format
 
                   return (
                     <motion.div
                       key={index}
                       className={`flex flex-col items-center p-3 rounded-lg min-w-[80px] ${
-                        index === currentHour
+                        hourNum === currentHour
                           ? "bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500"
                           : "bg-gray-100/50 dark:bg-gray-600/50 hover:bg-gray-200 dark:hover:bg-gray-500/50"
                       }`}
@@ -557,10 +558,7 @@ const Forecast = () => {
                       transition={{ delay: index * 0.05 }}
                     >
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {hourDate.toLocaleTimeString([], {
-                          hour: "2-digit",
-                          hour12: true,
-                        })}
+                        {`${displayHour} ${ampm}`}
                       </p>
                       <div className="my-2">
                         {getDayIcon(hour.condition?.code, 24)}
@@ -585,7 +583,6 @@ const Forecast = () => {
             </p>
           )}
         </div>
-
         {/* Additional weather details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* UV Index */}
@@ -638,7 +635,7 @@ const Forecast = () => {
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       Sunrise
                     </p>
-                    <p className="font-medium">
+                    <p className="font-medium text-gray-800 dark:text-white">
                       {dayData.day.astro.sunrise || "N/A"}
                     </p>
                   </div>
@@ -651,7 +648,7 @@ const Forecast = () => {
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       Sunset
                     </p>
-                    <p className="font-medium">
+                    <p className="font-medium text-gray-800 dark:text-white">
                       {dayData.day.astro.sunset || "N/A"}
                     </p>
                   </div>
@@ -664,7 +661,7 @@ const Forecast = () => {
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       Moon Phase
                     </p>
-                    <p className="font-medium capitalize">
+                    <p className="font-medium capitalize text-gray-800 dark:text-white">
                       {dayData.day.astro.moon_phase || "N/A"}
                     </p>
                   </div>
@@ -677,7 +674,7 @@ const Forecast = () => {
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       Illumination
                     </p>
-                    <p className="font-medium">
+                    <p className="font-medium text-gray-800 dark:text-white">
                       {dayData.day.astro.moon_illumination || 0}%
                     </p>
                   </div>
@@ -704,66 +701,69 @@ const Forecast = () => {
     }
 
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2 md:gap-4">
-        {viewData.map((day, index) => {
-          if (!day || !day.day) return null;
+      <div className="flex justify-center">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2 md:gap-4 w-full">
+          {viewData.map((day, index) => {
+            if (!day || !day.day) return null;
 
-          const isToday =
-            new Date(day.date).toDateString() === new Date().toDateString();
-          return (
-            <motion.div
-              key={day.date || index}
-              className={`
+            const isToday =
+              new Date(day.date).toDateString() === new Date().toDateString();
+            return (
+              <motion.div
+                key={day.date || index}
+                className={`
                 bg-white/95 dark:bg-gray-700/95 rounded-xl p-3 md:p-4 shadow-sm 
                 hover:shadow-md transition-all duration-200 cursor-pointer
                 ${isToday ? "ring-2 ring-blue-500" : ""}
+                flex flex-col items-center text-center
               `}
-              whileHover={{ scale: 1.02 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.3 }}
-              onClick={() => {
-                setCurrentDate(new Date(day.date));
-                setCurrentView("day");
-              }}
-            >
-              <p className="font-semibold text-gray-700 dark:text-gray-200 text-center text-sm md:text-base">
-                {formatDate(new Date(day.date), "dayOnly")}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                {new Date(day.date).getDate()}
-              </p>
-              <div className="my-2 md:my-4 flex justify-center">
-                {getDayIcon(day.day.condition?.code, 32)}
-              </div>
-              <div className="flex items-center justify-center gap-1 text-xs md:text-sm">
-                <span className="font-bold text-gray-800 dark:text-white">
-                  {Math.round(
-                    unit === "celsius" ? day.day.maxtemp_c : day.day.maxtemp_f
-                  )}
-                  °
-                </span>
-                <span className="text-gray-500 dark:text-gray-400">
-                  {Math.round(
-                    unit === "celsius" ? day.day.mintemp_c : day.day.mintemp_f
-                  )}
-                  °
-                </span>
-              </div>
-              <div className="flex justify-center mt-2">
-                <div
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    day.day.daily_chance_of_rain > 50
-                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                      : "bg-gray-100 text-gray-800 dark:bg-gray-600/30 dark:text-gray-300"
-                  }`}
-                >
-                  {Math.round(day.day.daily_chance_of_rain || 0)}% rain
+                whileHover={{ scale: 1.02 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.3 }}
+                onClick={() => {
+                  setCurrentDate(new Date(day.date));
+                  setCurrentView("day");
+                }}
+              >
+                <p className="font-semibold text-gray-700 dark:text-gray-200 text-sm md:text-base">
+                  {formatDate(new Date(day.date), "dayOnly")}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {new Date(day.date).getDate()}
+                </p>
+                <div className="my-2 md:my-4">
+                  {getDayIcon(day.day.condition?.code, 32)}
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
+                <div className="flex items-center justify-center gap-1 text-xs md:text-sm">
+                  <span className="font-bold text-gray-800 dark:text-white">
+                    {Math.round(
+                      unit === "celsius" ? day.day.maxtemp_c : day.day.maxtemp_f
+                    )}
+                    °
+                  </span>
+                  <span className="text-gray-500 dark:text-gray-400">
+                    {Math.round(
+                      unit === "celsius" ? day.day.mintemp_c : day.day.mintemp_f
+                    )}
+                    °
+                  </span>
+                </div>
+                <div className="mt-2">
+                  <div
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      day.day.daily_chance_of_rain > 50
+                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                        : "bg-gray-100 text-gray-800 dark:bg-gray-600/30 dark:text-gray-300"
+                    }`}
+                  >
+                    {Math.round(day.day.daily_chance_of_rain || 0)}% rain
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     );
   };
@@ -822,11 +822,11 @@ const Forecast = () => {
               <motion.div
                 key={dayIndex}
                 className={`
-                  bg-white/95 dark:bg-gray-700/95 rounded-lg p-2 shadow-sm 
-                  hover:shadow-md transition-all duration-200 cursor-pointer min-h-[100px]
-                  ${day.isCurrentMonth ? "" : "opacity-50"}
-                  ${day.isToday ? "ring-2 ring-blue-500" : ""}
-                `}
+                bg-white/95 dark:bg-gray-700/95 rounded-lg p-2 shadow-sm 
+                hover:shadow-md transition-all duration-200 cursor-pointer min-h-[100px]
+                ${day.isCurrentMonth ? "" : "opacity-50"}
+                ${day.isToday ? "ring-2 ring-blue-500" : ""}
+              `}
                 whileHover={{ scale: 1.02 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -1009,14 +1009,14 @@ const Forecast = () => {
 
   return (
     <motion.div
-      className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-lg p-6 w-full max-w-6xl mx-auto"
+      className="bg-transparent backdrop-blur-md p-6 w-full max-w-7xl mx-auto mb-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
     >
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 justify-center md:justify-start">
           <h3 className="text-xl font-bold text-gray-800 dark:text-white">
             Weather Forecast
           </h3>
@@ -1042,7 +1042,7 @@ const Forecast = () => {
         </div>
 
         {/* View Selector */}
-        <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+        <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1 justify-center">
           {viewOptions.map((option) => {
             const Icon = option.icon;
             return (
@@ -1050,13 +1050,13 @@ const Forecast = () => {
                 key={option.id}
                 onClick={() => setCurrentView(option.id)}
                 className={`
-                  flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
-                  ${
-                    currentView === option.id
-                      ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm"
-                      : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                  }
-                `}
+                flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+                ${
+                  currentView === option.id
+                    ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                }
+              `}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
