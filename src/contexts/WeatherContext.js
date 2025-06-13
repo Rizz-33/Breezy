@@ -10,7 +10,7 @@ export const WeatherProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [unit, setUnit] = useState("celsius");
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
 
   const fetchWeather = async (query = "Colombo") => {
     setLoading(true);
