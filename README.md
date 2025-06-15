@@ -135,7 +135,8 @@ I built a simple yet insightful weather reporter app named "Breezy" where users 
 
 ## Repository and Deployment Links
 
-- **GitHub Repository:** [https://github.com/Rizz-33/weather-reporter](https://github.com/Rizz-33/breezy_rizz-33)
+- **GitHub Repository:** [https://github.com/Rizz-33/breezy_rizz-33](https://github.com/Rizz-33/breezy_rizz-33)
+                         [https://github.com/Rizz-33/Breezy](https://github.com/Rizz-33/Breezy)
 - **Deployed Website:** [https://breezy_rizz-33.vercel.app](https://breezyrizz-33.vercel.app)
 - **Deployment Details** [aarruwanthie-gmailcom's projects
 team members](https://breezyrizz-33-git-main-aarruwanthie-gmailcoms-projects.vercel.app) 
